@@ -1,22 +1,39 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Login from "./components/user/Login.js";
-import Register from "./components/user/Register.js";
-import Home from "./components/user/Home.js";
-import Schools from "./components/user/Schools.js";
+import Login from "./components/Login.js";
+import Register from "./components/Register.js";
+import Home from "./components/Home.js";
+import Schools from "./components/Schools";
+import SchoolList from "./components/Dashboard/SchoolList.js";
+import MySchools from "./components/Dashboard/MySchools.js";
+import MyProfile from "./components/Dashboard/MyProfile.js";
+import LogoutUser from "./components/Dashboard/Logout.js";
 
-const School = () => {
-  return (
+const App = () => {
+  const loginuser = false;return (
     <>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/schools" element={<Schools />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Routes>
-      </BrowserRouter>
+      {loginuser ? (
+        <BrowserRouter>
+          <Routes>
+            <Route path="/user/schools" element={<SchoolList />} />
+            <Route path="/user/myschools" element={<MySchools />} />
+            <Route path="/user/profile" element={<MyProfile />} />
+            <Route path="/user/logout" element={<LogoutUser />} />
+          </Routes>
+        </BrowserRouter>
+      ) : (
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/Schools" element={<Schools />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Routes>
+        </BrowserRouter>
+      )}
     </>
   );
 };
-export default School;
+
+export default school;
+
