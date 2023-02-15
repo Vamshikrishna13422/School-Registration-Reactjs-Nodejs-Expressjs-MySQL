@@ -165,7 +165,7 @@ router.delete("/delete/:schoolid",(req,res) => {
 });
 
 //event By ID
- router.get("/:schoolid",(req,res) => {
+router.get("/:schoolid",(req,res) => {
   try{
     const schoolid=req.params.schoolid;
     var checkExisting = `SELECT * FROM schools_list WHERE school_id='${schoolid}'`;

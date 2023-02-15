@@ -2,6 +2,8 @@ const express = require("express");
 
 const db = require("../config/dbConfig");
 
+const jwt=require("jsonwebtoken");
+
 var router = express.Router();
 
 router.get("/", (req, res) => {
@@ -194,7 +196,7 @@ router.get("/:userid",(req,res) =>{
   }); 
 
 //Get List Of Users
- router.get("/i/list",(req,res) => {
+router.get("/i/list",(req,res) => {
     try{
       var listOne = `SELECT * FROM users`;
       db.query(listOne,(error,results) => {
@@ -227,5 +229,56 @@ router.get("/:userid",(req,res) =>{
       });
     }
   });  
+
+//user login
+router.post("/login/",(req,res) => {
+  try{
+    const username=req.body.username;
+    const password=req.body.password;
+
+    var checkUserInDb=`SELECT * FROM users WHERE user_rollnumber='${username}'`;
+    db.query(checkUserInDb,(error,results) => {
+      if(error){
+        res.json({
+          sucess:false,
+          error,
+        });
+      } else {
+        if(results.length != 0){
+          const dbpassword=results[0].user_password;
+          if(dbpassword == password) {
+            let jwtSecretKey=process.env.JWT_SECRET_KEY;
+            let userData= {
+              time:Date(),
+              username: username,
+            };
+          const token = jwt.sign(userData,jwtSecretKey);
+            res.json({
+              success:true,
+              message:"Login Sucess",
+              token: token,
+            });
+      
+          } else{ 
+            res.json({
+              sucess:false,
+              message:"Wrong Password!,Try Again"
+            });
+           }
+        } else {
+          res.json({
+            success:false, 
+            message:"User Not Registered,Try Again",
+          });
+        }
+      }
+      });
+      } catch(error){
+    res.json({
+      sucess:false,
+      error,
+    });
+  }
+});
 
 module.exports = router;
