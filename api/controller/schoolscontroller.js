@@ -199,17 +199,17 @@ router.delete("/delete/:schoolid",(req,res) => {
 });
 
 //Get List Of schools
-router.get("/list/", (req,res) => {
+router.get("/i/list/",(req,res) => {
   try{
-    var listSchools=`SELECT * FROM schools_list`;
-    db.query(listSchools, (error,listresults) => {
+    var Schools = `SELECT *FROM schools_list`;
+    db.query(Schools, (error,results) => {
       if(error) {
         res.json({
           success:false,
           error,
         });
-      } else {
-        if(listresults.length === 0) {
+      } else { 
+        if( results.length === 0) { 
           res.json({
             success:false,
             message:"No Schools",

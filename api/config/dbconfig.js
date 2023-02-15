@@ -1,4 +1,8 @@
 const mysql=require("mysql");
+
+const jwt=require("jsonwebtoken");
+const dotenv=require("dotenv");
+
 const conn=mysql.createConnection({
     host:"localhost",
     user:"root",

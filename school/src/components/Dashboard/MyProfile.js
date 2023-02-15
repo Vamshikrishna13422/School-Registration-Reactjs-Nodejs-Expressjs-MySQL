@@ -1,7 +1,7 @@
 import React from "react";
 import Header from "./Header";
 
-const MySchools = () => {
+const MyProfile = () => {
   return (
     <>
       <Header />
@@ -54,4 +54,4 @@ const MySchools = () => {
   );
 };
 
-export default MySchools;
+export default MyProfile;

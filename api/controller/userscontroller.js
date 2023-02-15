@@ -191,13 +191,13 @@ router.get("/:userid",(req,res) =>{
         error,
       });
     }
-  });  
+  }); 
 
 //Get List Of Users
-router.get("/list/",(req,res)=> {
+ router.get("/i/list",(req,res) => {
     try{
       var listOne = `SELECT * FROM users`;
-      db.query(listOne,(error,results) =>{
+      db.query(listOne,(error,results) => {
         if(error)
         {
           res.json({
@@ -211,7 +211,7 @@ router.get("/list/",(req,res)=> {
             res.json({
               success:false,
               message:"No users",
-            });
+            }); 
           }else {
             res.json({
               success:true,

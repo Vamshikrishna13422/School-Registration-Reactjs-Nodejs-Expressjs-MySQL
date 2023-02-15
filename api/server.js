@@ -1,4 +1,8 @@
 const express=require("express");
+
+const jwt=require("jsonwebtoken");
+const dotenv=require("dotenv");
+
 const schoolcontroller = require("./controller/schoolscontroller");
 const admissioncontroller = require("./controller/admissioncontroller");
 const usercontroller = require("./controller/userscontroller");
@@ -7,7 +11,7 @@ var school=express();
 school.listen(3089, () => {
     console.log("Hey Im Working At 3089");
 });
-school.use(express.json());
+school.use(express.json()); 
 school.use("/school/",schoolcontroller); 
-school.use("/admission/",admissioncontroller); 
+school.use("/admission/",admissioncontroller);  
 school.use("/user/",usercontroller);
