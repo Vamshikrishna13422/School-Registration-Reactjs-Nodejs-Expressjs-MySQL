@@ -55,64 +55,78 @@ router.post("/create/", (req, res) => {
       });
     }
   });
-//update
+//update user [auth]
 router.put("/update/",(req,res) => {
-    try{
-        const user_id = req.body.user_id;
-        const user_name= req.body.user_name;
-        const user_roll= req.body.user_roll;
-        const user_mob= req.body.user_mob;
-        const user_pass = req.body.user_pass;
-      
-      //checking the Existing
-      var checkExisting = `SELECT * FROM users WHERE user_id='${user_id}'`;
-      db.query(checkExisting,(error,results) =>{
-        if(error){
-          res.json({
-            success:false,
-            error,
-          });
-        }
-        else{
-          if(results.length === 0)
+  try{ 
+    const userid = req.body.userid;
+    const user_name= req.body.user_name;
+    const user_roll= req.body.user_roll;
+    const user_mob= req.body.user_mob;
+    const user_pass = req.body.user_pass;
+  
+    let tokenHeader= process.env.TOKEN_HEADER_KEY;
+    let tokensecrete=process.env.JWT_SECRET_KEY;
+     // validate the token
+     const token=req.header(tokenHeader);
+     const verified=req.verify(token, tokensecrete);
+     if(verified)
+    {
+     //checking the Existing
+   var checkExisting = `SELECT * FROM users WHERE user_id='${userid}'`;
+   db.query(checkExisting,(error,results) =>{
+    if(error) {
+      res.json({
+        success:false,
+        error, 
+      });
+    }
+    else{
+      if (results.length === 0)
+      {
+        res.json({
+          success:false,
+          message:"User ID Not Found! Not Updated"
+        });
+      }
+      else{
+      var updateData = `UPDATE users  SET  
+        user_name='${user_name}',
+        user_rollnumber='${user_roll}',
+        user_mobile='${user_mob}',
+        user_password='${user_pass}' WHERE user_id='${userid}'`;
+  
+        db.query( updateData,(error,results) => {
+          if(error)
           {
-            res.json({
-              sucess:false,
-              message:"User ID Not Found! Not Updated"
+            res.json ({
+              success:false,
+              error,
             });
           }
           else{
-            var updateData = `UPDATE users  SET  
-            user_name='${user_name}',
-            user_rollnumber='${user_roll}',
-            user_mobile='${user_mob}',
-            user_password='${user_pass}' WHERE user_id='${user_id}'`;
-  
-            db.query( updateData,(error,results) => {
-              if(error)
-              {
-                res.json ({
-                  sucess:false,
-                  error,
-                });
-              }
-              else{
-                res.json({
-                  sucess:true,
-                  message:"Data Updated Sucess",
-                  results,
-                });
-              }
+            res.status(200).json({
+              success:true,
+              message:"Data Updated Sucess",
+              results,
             });
-          }
-        }
-      });
-   }   
-   catch(error){
+          }  
+        });
+      }
+    }
+   });
+     } 
+     else {
+     res.status(401).json({
+     success:false,
+      message:"User Not Have Access to Update The Data", 
+       });
+  } 
+ } catch(error){
     res.json({
       sucess:false,
+      message:"Error in catch",
       error,
-    });
+    });  
    }
   });  
 //delete
@@ -161,7 +175,7 @@ router.delete("/delete/:userid",(req,res) => {
   }
   });  
 
-//event By ID
+//user By ID
 router.get("/:userid",(req,res) =>{
     try{
         const userid=req.params.userid;
@@ -246,13 +260,16 @@ router.post("/login/",(req,res) => {
       } else {
         if(results.length != 0){
           const dbpassword=results[0].user_password;
+          const userid=results[0].user_id;
           if(dbpassword == password) {
             let jwtSecretKey=process.env.JWT_SECRET_KEY;
-            let userData= {
+            let sessionData= {
               time:Date(),
               username: username,
+              userid: userid,
             };
-          const token = jwt.sign(userData,jwtSecretKey);
+          const token = jwt.sign(sessionData,jwtSecretKey,{
+            expiresIn:process.env.JWT_TOKEN_EXPIRES });
             res.json({
               success:true,
               message:"Login Sucess",
