@@ -28,10 +28,12 @@ router.post("/create/", (req, res) => {
       const user_roll= req.body.user_roll;
       const user_mob= req.body.user_mob;
       const user_pass = req.body.user_pass;
+      const status = req.body.status
+      const isDel = req.body.isDel
 
-      var sql = `INSERT INTO users (user_id,user_name,user_rollnumber,user_mobile,user_password) 
+      var sql = `INSERT INTO users (user_id,user_name,user_rollnumber,user_mobile,user_password,status,isDeleted) 
       VALUES
-      ('${user_id}','${user_name}','${user_roll}','${user_mob}','${user_pass}')`;
+      ('${user_id}','${user_name}','${user_roll}','${user_mob}','${user_pass}','${status}','${isDel}')`;
   
       db.query(sql, (err, results) => {
         if (err) {
@@ -56,124 +58,75 @@ router.post("/create/", (req, res) => {
     }
   });
 //update user [auth]
-router.put("/update/",(req,res) => {
-   try{ 
-    const userid = req.body.userid;
-    const user_name= req.body.user_name;
-    const user_roll= req.body.user_roll;
-    const user_mob= req.body.user_mob;
-    const user_pass = req.body.user_pass;
-  
+router.put("/update/", (req,res) => {
+  try {
+    const userid= req.body.userid;
+    const username= req.body.username;
+    const userroll= req.body.userroll;
+    const usermob= req.body. usermob;
+    const userpass= req.body.userpass;
+    const userstatus=req.body.userstatus;
+    const userdel=req.body.userdel;
+
     let tokenHeader= process.env.TOKEN_HEADER_KEY;
-    let tokensecrete=process.env.JWT_SECRET_KEY;
-     // validate the token
-     const token=req.header(tokenHeader);
-     const verified=req.verify(token, tokensecrete);
-     if(verified)
+    let tokenSecrete= process.env.JWT_SECRET_KEY;
+
+    // validate The Token
+    const token=req.header(tokenHeader);
+    const verified=req.verify(token,tokenSecrete);
+    if(verified)
     {
-     //checking the Existing
-   var checkExisting = `SELECT * FROM users WHERE user_id='${userid}'`;
-   db.query(checkExisting,(error,results) =>{
-    if(error) {
-      res.json({
-        success:false,
-        error, 
-      });
-    }
-    else{
-      if (results.length === 0)
-      {
-        res.json({
-          success:false,
-          message:"User ID Not Found! Not Updated"
-        });
-      }
-      else{
-      var updateData = `UPDATE users  SET  
-        user_name='${user_name}',
-        user_rollnumber='${user_roll}',
-        user_mobile='${user_mob}',
-        user_password='${user_pass}' WHERE user_id='${userid}'`;
-  
-        db.query( updateData,(error,results) => {
-          if(error)
-          {
-            res.json ({
-              success:false,
-              error,
+      // Checking The Existing
+      var checkExisting= `SELECT * FROM users WHERE user_id='${userid}'`;
+      db.query(checkExisting, (error,results) => {
+        if(error) {
+          res.json({
+            success:false,
+            error,
+          });
+        } else {
+          if(results.length != 0) {
+            //update data
+            var updateData= `UPDATE users SET user_name='${username}',
+            user_rollnumber='${userroll}',user_mobile='${usermob}',
+            user_password='${userpass}',status='${ userstatus}',isDeleted='${userdel}' WHERE user_id='${userid}'`;
+
+            db.query(updateData,(error,results) => {
+              if(error)
+              {
+                res.json({
+                  success:false,
+                  error,
+                });
+              } else{
+                res.json({
+                  success:true,
+                  message:"Data Updated Sucess",
+                  results,
+                });
+              }
             });
-          }
-          else{
-            res.status(200).json({
-              success:true,
-              message:"Data Updated Sucess",
-              results,
+          } else {
+            res.json({
+              success:false,
+              message:"User ID Not Found! Not Updated",
             });
           }  
-        });
-      }
-    }
-   });
-     } 
-     else {
-     res.status(401).json({
-     success:false,
-      message:"User Not Have Access to Update The Data", 
-       });
-  } 
- } catch(error){
-    res.json({
-      sucess:false,
-      message:"Error in catch",
-      error,
-    });  
-   }
-  });  
-//delete
-router.delete("/delete/:userid",(req,res) => {
-    try{
-      const userid=req.params.userid;
-      //checking the Existing
-      var checkExisting = `SELECT * FROM users  WHERE user_id='${userid}'`;
-      db.query(checkExisting,(error,results) => {
-        if(error){
-          res.json ({
-            success:false,
-             error,
-          });
         }
-      else {
-        if(results.length === 0){
-          res.json({
-            sucess:false,
-            message:"user Id Not Found! Not Updated",
-          });
-        }else {
-          var deleteOne= `DELETE FROM users WHERE user_id='${userid}'`;
-          db.query(deleteOne,(error,results) => {
-            if(error){
-              res.json({
-                sucess:false,
-                message:"User Is Not Deleted",
-                error,
-              });
-            } else {
-              res.json({
-                sucess:true,
-                message:"User Is Deleted Success",
-              });
-            }
-          });
-        } 
-      }
-    });
-   } catch (error) {
+      });
+    } else {
+      res.json({
+        sucess:false,
+        message:"User Not Have Access to Update The Data",
+      });
+    }
+  } catch(error) {
     res.json({
-      success: false,
+      success:false,
       error,
     });
   }
-  });  
+});
 
 //user By ID
 router.get("/:userid",(req,res) =>{
@@ -250,7 +203,7 @@ router.post("/login/",(req,res) => {
     const username=req.body.username;
     const password=req.body.password;
 
-    var checkUserInDb=`SELECT * FROM users WHERE user_rollnumber='${username}'`;
+    var checkUserInDb = `SELECT * FROM users WHERE user_rollnumber='${username}'`;
     db.query(checkUserInDb,(error,results) => {
       if(error){
         res.json({
@@ -273,7 +226,7 @@ router.post("/login/",(req,res) => {
             res.json({
               success:true,
               message:"Login Sucess",
-              token: token,
+              token: token, 
             });
       
           } else{ 
@@ -297,5 +250,38 @@ router.post("/login/",(req,res) => {
     });
   }
 });
+
+//search User 
+router.get("/s/search/",(req,res) => {
+  try{
+    const searchQuery=req.query.text;
+    var searchQueryDb=`SELECT * FROM users WHERE user_name LIKE '%${searchQuery}%'`;
+    db.query(searchQueryDb,(error,results) => {
+      if(error) {
+        res.json({
+          success:false,
+          error,
+        });
+      } else{
+        if(results.length != 0) {
+          res.status(200).json({
+            success:true,
+            searchResults:results,           
+          });
+        } else{
+          res.status(404).json ({
+            message:"Search Related Information Not Found!",
+          });
+        }
+      }
+    });
+  } catch (error) {
+    res.json({
+      success:false,
+      error,
+    });
+  }
+});
+
 
 module.exports = router;

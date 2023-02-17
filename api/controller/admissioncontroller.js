@@ -3,6 +3,21 @@ const express = require("express");
 const db = require("../config/dbConfig");
 
 var router = express.Router();
+
+// file upload code
+var multer=require("multer")
+var myLocalStorage= multer.diskStorage({
+  destination:function(req,file,callback)
+  {
+    callback(null,"./images");
+  },
+  filename:function(req,file,callback)
+  {
+    callback(null,file.originalname);
+  },
+});
+var upload=multer({ storage:myLocalStorage });
+
 router.get("/", (req, res) => {
     try {
       res.json({
@@ -16,7 +31,7 @@ router.get("/", (req, res) => {
       });
     }
   }); 
-
+// create Admission
 router.post("/create/", (req, res) => {
     try {
       const admission_id = Math.floor(10000 * Math.random() + 99999);
@@ -52,7 +67,7 @@ router.post("/create/", (req, res) => {
       });
     }
   });
-
+// update admission
 router.put("/update/",(req,res) => {
     try{
       const admission_id = req.body.admission_id;
@@ -68,7 +83,7 @@ router.put("/update/",(req,res) => {
           res.json({
             success:false,
             error,
-          });
+          }); 
         }
         else{
           if(results.length === 0)
@@ -251,6 +266,21 @@ router.get("/info/:admid",(req,res) => {
       error,
     });
    }
+});
+
+// Upload An Image
+router.post("/upload/",upload.single('myImage'),(req,res) =>                                                                                                                   {
+  try{
+    res.json({
+      success:true,
+      message:"File Uploaded Success",
+    });
+  } catch(error) {
+    res.json({
+      success:false,
+      error,
+    });
+  }
 });
 
 module.exports = router;
