@@ -57,7 +57,7 @@ router.post("/create/", (req, res) => {
   });
 //update user [auth]
 router.put("/update/",(req,res) => {
-  try{ 
+   try{ 
     const userid = req.body.userid;
     const user_name= req.body.user_name;
     const user_roll= req.body.user_roll;
