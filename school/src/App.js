@@ -9,8 +9,10 @@ import MySchools from "./components/Dashboard/MySchools.js";
 import MyProfile from "./components/Dashboard/MyProfile.js";
 import LogoutUser from "./components/Dashboard/Logout.js";
 
-const App = () => {
-  const loginuser = false;return (
+const School = () => {
+  const loginuser = false;
+  
+  return (
     <>
       {loginuser ? (
         <BrowserRouter>
@@ -35,5 +37,5 @@ const App = () => {
   );
 };
 
-export default school;
+export default School;
 
