@@ -4,7 +4,7 @@ import Login from "./components/Login.js";
 import Register from "./components/Register.js";
 import Home from "./components/Home.js";
 import Schools from "./components/Schools";
-import SchoolList from "./components/Dashboard/SchoolList.js";
+import SchoolList from "./components/Dashboard/schoolist.js";
 import MySchools from "./components/Dashboard/MySchools.js";
 import MyProfile from "./components/Dashboard/MyProfile.js";
 import LogoutUser from "./components/Dashboard/Logout.js";

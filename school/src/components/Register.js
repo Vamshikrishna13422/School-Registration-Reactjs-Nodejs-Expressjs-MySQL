@@ -57,7 +57,7 @@ const Register = () => {
                     id="exampleInputrollnumber"
                     aria-describedby="rollnumberHelp"
                     placeholder="Enter roll number"
-                    onChange={(e) => setInputEmail(e.target.value)}
+                    onChange={(e) => setInputrollnumber(e.target.value)}
                   />
                 </div>
                 <div className="form-group">
