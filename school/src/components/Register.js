@@ -9,21 +9,33 @@ const Register = () => {
   const [inputrollnumber, setInputrollnumber] = useState("");
   const [inputMobile, setInputMobile] = useState("");
   const [inputPassword, setInputPassword] = useState("");
+  const [userCreated, setUserCreated] = useState(false);
+  const [responseMessage, setResponseMessage] = useState("");
 
   const registerUser = (e) => {
     e.preventDefault();
 
     const registerUser = {
-      name: inputName,
-      rollnumber: inputrollnumber,
-      mobile: inputMobile,
-      password: inputPassword,
+      user_name: inputName,
+      user_rollnumber: inputrollnumber,
+      user_mobile: inputMobile,
+      user_password: inputPassword,
     };
 
-    console.log(registerUser);
-  };
-
-  return (
+    
+      const options={
+        method:"Post",
+        headers:{ "content-Type":"application/json" },
+        body :JSON.stringify(registerUser),
+      };
+      // fetch("http://localhost:3089/user/create/",optons)
+     //.then((response) => response.json())
+     //.then((res) => {
+      //setUserCreated (res.success);
+      setResponseMessage (res.message);
+    //});
+   };
+   return (
     <>
       <Header />
       <div className="container p-3 mt-3">
@@ -38,7 +50,21 @@ const Register = () => {
                   <b>Register</b>
                 </h5>
               </div>
-              <hr />
+              { userCreated ? (
+              <>
+              <div 
+              class={`alert alert-${
+                userCreated ? "Sucess" : "Danger"
+               }`}
+               role="alert"
+               >
+                {responseMessage}
+                </div>
+                </>
+                ):(
+                  ""
+                  )}
+                 <hr />
               <form onSubmit={registerUser}>
                 <div className="form-group">
                   <input
