@@ -8,6 +8,7 @@ import SchoolList from "./components/Dashboard/schoolist.js";
 import MySchools from "./components/Dashboard/MySchools.js";
 import MyProfile from "./components/Dashboard/MyProfile.js";
 import LogoutUser from "./components/Dashboard/Logout.js";
+import SchoolDetalis from "./components/SchoolDetalis.js";
 
 const School = () => {
   const loginuser = false;
@@ -30,6 +31,7 @@ const School = () => {
             <Route path="/Schools" element={<Schools />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/school/:sid" element={<SchoolDetalis/>} />
           </Routes>
         </BrowserRouter>
       )}

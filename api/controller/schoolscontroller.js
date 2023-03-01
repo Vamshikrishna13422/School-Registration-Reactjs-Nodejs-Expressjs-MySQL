@@ -78,7 +78,7 @@ router.put("/update/",(req,res) => {
         if(results.length === 0)
         {
           res.json({
-            sucess:false,
+            success:false,
             message:"School ID Not Found! Not Updated"
           });
         }

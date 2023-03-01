@@ -6,6 +6,9 @@ const Schools = () => {
 
 const [listOfSchools, setListOfSchools] =useState([]); 
 useEffect(() => {
+  const options={
+    method:"GET",
+  }
  // fetch("http://localhost:3089/school/i/list/")
 //.then((response) => response.json())
 //.then((res) => setListOfSchools (res.results));

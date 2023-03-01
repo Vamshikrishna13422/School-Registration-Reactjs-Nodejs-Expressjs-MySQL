@@ -1,8 +1,15 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 
 const SchoolsList = (props) => { 
     const{ schoolsList } =props;
+    const navigate = useNavigate();
+
+    const navigateForSchool = sid => {
+      navigate(`/school/${sid}`);
+    }
+
 
 const listview =schoolsList.map((school, i) => {
     return(
@@ -18,7 +25,7 @@ const listview =schoolsList.map((school, i) => {
         </b>
       </div>
       <div className="col text-right">
-      <button className="btn btn-primary">Take Admission</button>
+      <button className="btn btn-primary"onclick={() => navigateForSchool(school.school_id)}>Take Admission</button>
       </div>
     </div>
   </div>
@@ -26,12 +33,10 @@ const listview =schoolsList.map((school, i) => {
   
   )
 })
-return(
-<>
-{listview}
-</>
+    return(
+      <>
+    {listview}
+    </>
 )
 }
-
-
 export default SchoolsList;
