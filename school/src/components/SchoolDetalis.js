@@ -45,7 +45,8 @@ const SchoolDetalis = () => {
                     navigate('/login');
                     }}
                     >
-                        Take Admission</button>
+                        Take Admission
+                        </button>
                 </div>
               </div>
             </div>

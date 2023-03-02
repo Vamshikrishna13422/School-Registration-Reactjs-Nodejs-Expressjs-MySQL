@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import Header from "./Header";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate =useNavigate();
   const [inputrollnumber, setInputrollnumber] = useState("");
   const [mypassword, setpassword] = useState("");
+  const [userLogin, setuserLogin] = useState(false);
+  const [responseMessage, setResponseMessage] = useState("");
 
   const addrollnumber = (e) => {
     setInputrollnumber(e.target.value);
@@ -20,11 +23,30 @@ const Login = () => {
     e.preventDefault();
 
     let newLogin = {
-      rollnumber: inputrollnumber,
+      username: inputrollnumber,
       password: mypassword,
     };
 
-    console.log(newLogin);
+    
+    const options={
+      method:"Post",
+      headers:{ "content-Type":"application/json" },
+      body :JSON.stringify(newLogin),
+    };
+    // fetch("http://localhost:3089/user/login/",optons)
+   //.then((response) => response.json())
+   //.then((res) => {
+    if(res.success === true)
+    {
+       //setuserLogin (res.success);
+       setResponseMessage (res.message);
+       navigate('/user/schools')
+    }else {
+      //setuserLogin (res.success);
+      setResponseMessage (res.message);
+    }
+    //});
+
   };
 
   return (
@@ -42,6 +64,7 @@ const Login = () => {
                   <b>Login</b>
                 </h5>
               </div>
+              {userLogin === false ? responseMessage : ""}
               <hr />
               <form onSubmit={submitTheFrom}>
                 <div class="form-group">
