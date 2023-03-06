@@ -1,10 +1,40 @@
-import React from "react";
+import React, { useEffect, useState} from "react";
 import Header from "./Header";
+import { useNavigate } from "react-router-dom";
 
 const MySchools = () => {
+  const navigate= useNavigate();
+  const [userAuth, setUserAuth] =useState();
+  const [authUserDetails,setAuthUserDetails] =useState([]);
+  const token= localStorage.getItem("token");
+  
+  useEffect(() => {
+  if(token !== null || undefined) {
+    const options={
+      method:"POST",
+      headers:{ "content-Type":"application/json", 
+      local_header_key: token,
+      },
+    };
+   fetch("http://localhost:3089/user/auth/",options)
+  .then((response) => response.json())
+  .then((res) => {
+    if(res.success === true){
+      setUserAuth(res.success);
+      setAuthUserDetails(res.user);
+    } else  {
+      localStorage.removeItem('token');
+      navigate('/login');
+    }
+  });
+} else {
+  navigate('/login');
+}
+  },[]);
+
   return (
     <>
-      <Header />
+     <Header />
       <div className="container mt-3 pt-3">
         <h1>Schools</h1>
         <div className="row p-2">

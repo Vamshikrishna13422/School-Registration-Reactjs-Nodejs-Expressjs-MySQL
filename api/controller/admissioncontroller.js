@@ -55,7 +55,7 @@ router.post("/create/", (req, res) => {
         } else {
           res.json({
             success: true,
-            message: "Admission  Created Success",
+            message: "Admission  Created Success, To Conform Admission Proceed For Payment",
             results,
           });
         }

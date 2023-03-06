@@ -33,19 +33,21 @@ const Login = () => {
       headers:{ "content-Type":"application/json" },
       body :JSON.stringify(newLogin),
     };
-    // fetch("http://localhost:3089/user/login/",optons)
-   //.then((response) => response.json())
-   //.then((res) => {
+    fetch("http://localhost:3089/user/login/",options)
+    .then((response) => response.json())
+    .then((res) => {
     if(res.success === true)
     {
-       //setuserLogin (res.success);
+       setuserLogin (res.success);
        setResponseMessage (res.message);
-       navigate('/user/schools')
+       // localStorage.setItem("userLogin",res.success);
+       localStorage.setItem("token",res.token);
+       navigate("/user/schools")
     }else {
-      //setuserLogin (res.success);
+      setuserLogin (res.success);
       setResponseMessage (res.message);
     }
-    //});
+    });
 
   };
 

@@ -28,12 +28,12 @@ const Register = () => {
         headers:{ "content-Type":"application/json" },
         body :JSON.stringify(registerUser),
       };
-      // fetch("http://localhost:3089/user/create/",optons)
-     //.then((response) => response.json())
-     //.then((res) => {
-      //setUserCreated (res.success);
+      fetch("http://localhost:3089/user/create/",options)
+     .then((response) => response.json())
+     .then((res) => {
+      setUserCreated (res.success);
       setResponseMessage (res.message);
-    //});
+    });
    };
    return (
     <>

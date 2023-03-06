@@ -8,25 +8,19 @@ import SchoolList from "./components/Dashboard/schoolist.js";
 import MySchools from "./components/Dashboard/MySchools.js";
 import MyProfile from "./components/Dashboard/MyProfile.js";
 import LogoutUser from "./components/Dashboard/Logout.js";
+import DetailsOfSchool from "./components/Dashboard/DetailsOfSchool.js";
 import SchoolDetalis from "./components/SchoolDetalis.js";
 
-const School = () => {
-  const loginuser = false;
-  
+const App = () => {
   return (
     <>
-      {loginuser ? (
-        <BrowserRouter>
+       <BrowserRouter>
           <Routes>
             <Route path="/user/schools" element={<SchoolList />} />
             <Route path="/user/myschools" element={<MySchools />} />
             <Route path="/user/profile" element={<MyProfile />} />
             <Route path="/user/logout" element={<LogoutUser />} />
-          </Routes>
-        </BrowserRouter>
-      ) : (
-        <BrowserRouter>
-          <Routes>
+            <Route path="/user/school/:sid" element={<DetailsOfSchool/>} />
             <Route path="/" element={<Home />} />
             <Route path="/Schools" element={<Schools />} />
             <Route path="/login" element={<Login />} />
@@ -34,10 +28,10 @@ const School = () => {
             <Route path="/school/:sid" element={<SchoolDetalis/>} />
           </Routes>
         </BrowserRouter>
-      )}
+      
     </>
   );
 };
 
-export default School;
+export default App;
 

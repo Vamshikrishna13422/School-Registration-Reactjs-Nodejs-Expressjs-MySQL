@@ -1,5 +1,5 @@
 const express = require("express");
-
+const { query } =require("express")
 const db = require("../config/dbConfig");
 
 const jwt=require("jsonwebtoken");
@@ -20,20 +20,68 @@ router.get("/", (req, res) => {
   }
 }); 
 
+// check Auther
+router.post("/auth/", (req, res) => {
+  try { 
+    let tokenHeader = process.env.TOKEN_HEADER_KEY;
+    let tokenSecrete = process.env.JWT_SECRET_KEY;
+
+    // validate The Token
+    const token=req.header(tokenHeader);
+    const verified=jwt.verify(token,tokenSecrete);
+    
+    if(verified) {
+      const userid= verified.user_id;
+       var checkExisting = `SELECT * FROM users WHERE user_id ='${userid}' AND isDeleted='0'`;
+      db.query(checkExisting, (error,results) => {
+        if(error) {
+          res.json({
+            success:false,
+            error,
+          });
+        } else {
+          if(results.length != 0) { 
+            res.json({
+                  success:true,
+                  message:"Insession",
+                  user:results,
+                   });
+              } else {
+            res.json({
+              success:false,
+              message:"Not Acesss To Login",
+            });
+          }  
+        }
+      });
+       } else {
+      res.json({
+        success: false,
+        message:"Out Session",
+      });
+    } 
+    } catch (error) {
+    res.json({
+      success: false,
+      error,
+    });
+  }
+}); 
+
+
 //create
 router.post("/create/", (req, res) => {
     try {
-      const user_id = Math.floor(1000 * Math.random() + 9999);
-      const user_name= req.body.user_name;
-      const user_roll= req.body.user_roll;
-      const user_mob= req.body.user_mob;
-      const user_pass = req.body.user_pass;
+      const userid = Math.floor(1000 * Math.random() + 9999);
+      const username= req.body.username;
+      const userroll= req.body.userroll;
+      const usermob= req.body.usermob;
+      const userpass = req.body.userpass;
       const status = req.body.status
       const isDel = req.body.isDel
 
-      var sql = `INSERT INTO users (user_id,user_name,user_rollnumber,user_mobile,user_password,status,isDeleted) 
-      VALUES
-      ('${user_id}','${user_name}','${user_roll}','${user_mob}','${user_pass}','${status}','${isDel}')`;
+      var sql = `INSERT INTO users( user_id, user_name, user_rollnumber, user_mobile, user_password, status, isDeleted) VALUES
+      ('${userid}','${username}','${userroll}','${usermob}','${userpass}','${status}','${isDel}')`;
   
       db.query(sql, (err, results) => {
         if (err) {
@@ -66,18 +114,19 @@ router.put("/update/", (req,res) => {
     const usermob= req.body. usermob;
     const userpass= req.body.userpass;
     const userstatus=req.body.userstatus;
-    const userdel=req.body.userdel;
+    //const userdel=req.body.userdel;
 
     let tokenHeader= process.env.TOKEN_HEADER_KEY;
     let tokenSecrete= process.env.JWT_SECRET_KEY;
 
     // validate The Token
     const token=req.header(tokenHeader);
-    const verified=req.verify(token,tokenSecrete);
+    const verified=jwt.verify(token,tokenSecrete);
+
     if(verified)
     {
       // Checking The Existing
-      var checkExisting= `SELECT * FROM users WHERE user_id='${userid}'`;
+      var checkExisting= `SELECT * FROM users WHERE user_id ='${userid}'`;
       db.query(checkExisting, (error,results) => {
         if(error) {
           res.json({
@@ -87,11 +136,8 @@ router.put("/update/", (req,res) => {
         } else {
           if(results.length != 0) {
             //update data
-            var updateData= `UPDATE users SET user_name='${username}',
-            user_rollnumber='${userroll}',user_mobile='${usermob}',
-            user_password='${userpass}',status='${ userstatus}',isDeleted='${userdel}' WHERE user_id='${userid}'`;
-
-            db.query(updateData,(error,results) => {
+            var updateData= `UPDATE users SET user_name='${username}',user_rollnumber='${userroll}',user_mobile='${usermob}',user_password='${userpass}',status='${ userstatus}', WHERE user_id='${userid}'`;
+            db.query(updateData, (error,results) => {
               if(error)
               {
                 res.json({

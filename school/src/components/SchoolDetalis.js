@@ -23,7 +23,7 @@ const SchoolDetalis = () => {
             SetSchoolDetailsFound(res.success);
          }
           });
-      },[]);
+      },[]); 
       return (
         <>
         <Header />
