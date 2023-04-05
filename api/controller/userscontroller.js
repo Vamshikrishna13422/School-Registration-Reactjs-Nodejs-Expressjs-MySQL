@@ -31,8 +31,8 @@ router.post("/auth/", (req, res) => {
     const verified=jwt.verify(token,tokenSecrete);
     
     if(verified) {
-      const userid= verified.user_id;
-       var checkExisting = `SELECT * FROM users WHERE user_id ='${userid}' AND isDeleted='0'`;
+      const userid= verified.userid;
+       var checkExisting = `SELECT * FROM users WHERE user_id ='${userid}'`;
       db.query(checkExisting, (error,results) => {
         if(error) {
           res.json({
@@ -67,7 +67,6 @@ router.post("/auth/", (req, res) => {
     });
   }
 }); 
-
 
 //create
 router.post("/create/", (req, res) => {
@@ -114,7 +113,7 @@ router.put("/update/", (req,res) => {
     const usermob= req.body. usermob;
     const userpass= req.body.userpass;
     const userstatus=req.body.userstatus;
-    //const userdel=req.body.userdel;
+    const userdel=req.body.userdel;
 
     let tokenHeader= process.env.TOKEN_HEADER_KEY;
     let tokenSecrete= process.env.JWT_SECRET_KEY;
@@ -297,6 +296,87 @@ router.post("/login/",(req,res) => {
   }
 });
 
+router.get("/schools/", (req,res) => {
+  try {
+    let tokenHeader = process.env.TOKEN_HEADER_KEY;
+    let tokenSecrete = process.env.JWT_SECRET_KEY;
+
+    // validate The Token
+    const token=req.header(tokenHeader);
+    const verified=jwt.verify(token,tokenSecrete);
+    
+    if(verified) {
+      var userid= verified.userid;
+
+      const fetchSchoolDetails = async (schoolId) => {
+        return new Promise ((resolve,reject) => {
+          var getSchoolBySchoolId =  `SELECT * FROM schools_list WHERE school_id='${schoolId}'`;
+          db.query(getSchoolBySchoolId, (error,schoolDetails) => {
+            if(error) {
+              reject(error);
+            } else {
+              resolve(schoolDetails);
+            }
+          });
+        });
+      };
+
+      const fetchUserDetails = async (uid) => {
+        return new Promise ((resolve,reject) => {
+          var getUserDetailsById= `SELECT * FROM users WHERE user_id='${uid}'`;
+          db.query(getUserDetailsById,(error,userDetalis) => {
+            if(error) {
+              reject(error)
+            }else{
+              resolve(userDetalis)
+            }
+          });
+        })
+      }
+       
+      var checkExisting = `SELECT * FROM  schools_list WHERE user_id ='${userid}'`;
+      
+      db.query(checkExisting, async (error, admissionResults) => {
+        if(error){
+          res.json({
+            success:false,
+            error,
+          });
+        } else {
+          if (admissionResults.length === 0) {
+            res.json({
+            success:false,
+            message: "Admission Id Not Found",
+            });
+          } else {
+            for ( var i=0; i < admissionResults.iength; i++) {
+              var adId =  admissionResults[i].school_id;
+              var uid = admissionResults[i].user_id;
+              admissionResults[i].schoolDetails = await fetchSchoolDetails(adId);
+              admissionResults[i].userDetails = await fetchUserDetails(uid);
+
+            }
+            res.json({
+              success: true,
+              admissionResults,
+            });
+          }
+        }
+      });
+      } else {
+        res.json({
+          success:true,
+          error,
+        });
+      }
+    } catch (error) {
+      res.json({
+        success:false,
+        error,
+      });
+     }
+});
+
 //search User 
 router.get("/s/search/",(req,res) => {
   try{
@@ -328,6 +408,5 @@ router.get("/s/search/",(req,res) => {
     });
   }
 });
-
 
 module.exports = router;

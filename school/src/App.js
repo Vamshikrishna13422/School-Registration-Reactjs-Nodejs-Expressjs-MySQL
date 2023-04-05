@@ -10,13 +10,19 @@ import MyProfile from "./components/Dashboard/MyProfile.js";
 import LogoutUser from "./components/Dashboard/Logout.js";
 import DetailsOfSchool from "./components/Dashboard/DetailsOfSchool.js";
 import SchoolDetalis from "./components/SchoolDetalis.js";
+import privateRoute from "./privateRoute/index.jsx";
 
 const App = () => {
   return (
     <>
        <BrowserRouter>
           <Routes>
-            <Route path="/user/schools" element={<SchoolList />} />
+            <Route path="/user/schools" 
+            element={
+            <privateRoute>
+              <SchoolList/>
+              </privateRoute>
+              } />
             <Route path="/user/myschools" element={<MySchools />} />
             <Route path="/user/profile" element={<MyProfile />} />
             <Route path="/user/logout" element={<LogoutUser />} />
