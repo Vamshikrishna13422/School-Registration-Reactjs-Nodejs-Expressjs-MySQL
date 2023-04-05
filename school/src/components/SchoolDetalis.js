@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState} from "react";
 import Header from "./Header";
 import { useParams,useNavigate } from "react-router-dom";
 
@@ -6,8 +6,8 @@ const SchoolDetalis = () => {
     let params= useParams();
     const navigate = useNavigate();
     const schoolId=params.sid;
-    const [schoolDetalis, SetSchoolDetails] = usestate("");
-    const [schoolDetailsFound, SetSchoolDetailsFound] = usestate(false);
+    const [schoolDetalis, SetSchoolDetails] = useState("");
+    const [schoolDetailsFound, SetSchoolDetailsFound] = useState(false);
     
     useEffect(() => {
         const options= { 
